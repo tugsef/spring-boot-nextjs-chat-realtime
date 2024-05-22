@@ -545,4 +545,4 @@ This function generates an avatar color based on the message sender's username. 
   
 
 
-  ![](docs/screen.mov)
+  ![](docs/screen.mp4)
