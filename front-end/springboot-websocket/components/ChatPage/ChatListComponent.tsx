@@ -2,6 +2,7 @@
 import { Message, initilier } from "@/entities/EntityList";
 import React, { useEffect, useRef, useState } from "react";
 import ChatItem from "./ChatItem";
+import { API_BASE } from "@/lib/config";
 
 function ChatListComponent({
   lastMessage,
@@ -17,7 +18,7 @@ function ChatListComponent({
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`http://localhost:8080/messages/${senderId}/${recipientId}`, {
+    fetch(`${API_BASE}/messages/${senderId}/${recipientId}`, {
       signal: controller.signal,
     })
       .then((res) => res.json())

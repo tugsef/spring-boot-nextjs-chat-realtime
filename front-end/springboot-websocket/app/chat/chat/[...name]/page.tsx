@@ -6,6 +6,7 @@ import { Client } from "@stomp/stompjs";
 import { userList } from "@/data/User";
 import SockJS from "sockjs-client";
 import ChatClose from "@/components/ChatClose";
+import { WS_URL } from "@/lib/config";
 
 export default function page({
   params: { name },
@@ -17,7 +18,7 @@ export default function page({
   const [client, setClient] = useState<any>(null);
 
    useEffect(() => {
-     const socket = new SockJS("http://localhost:8080/ws");
+     const socket = new SockJS(WS_URL);
      const stompClient = new Client({
        webSocketFactory: () => socket,
        debug: (str) => console.log(str),

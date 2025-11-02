@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import ChatListComponent from "@/components/ChatPage/ChatListComponent";
 import { Message } from "@/entities/EntityList";
 import ChatClose from "@/components/ChatClose";
+import { WS_URL } from "@/lib/config";
 
 export default function page() {
   const [messages, setMessages] = useState<Message>({} as Message);
@@ -17,7 +18,7 @@ export default function page() {
   });
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(WS_URL);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str),

@@ -7,6 +7,7 @@ import { userList } from "@/data/User";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import ChatClose from "../ChatClose";
+import { API_BASE, WS_URL } from "@/lib/config";
 
 function UserMessageList({ id }: { id: string }) {
   const [group, setGroup] = useState<Message[]>([]);
@@ -16,14 +17,14 @@ function UserMessageList({ id }: { id: string }) {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:8080/group/${user.id}`)
+    fetch(`${API_BASE}/group/${user.id}`)
       .then((res) => {
         return res.json();
       })
       .then((data) => {
         setGroup(data);
       });
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(WS_URL);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str),

@@ -2,11 +2,12 @@
 import type { User } from "@/data/User";
 import { Message } from "@/entities/EntityList";
 import React, { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/config";
 
 function UserMessageItem({ group }: { group: Message }) {
   const [user, setUser] = useState<User>();
   useEffect(() => {
-    fetch(`http://localhost:8080/user/id/${group.recipientId}`)
+    fetch(`${API_BASE}/user/id/${group.recipientId}`)
       .then((res) => {
         return res.json();
       })
