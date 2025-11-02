@@ -3,7 +3,7 @@ import { Message } from "@/entities/EntityList";
 import React, { useEffect, useState } from "react";
 import UserMessageItem from "./UserMessageItem";
 import Link from "next/link";
-import { userList } from "@/data/User";
+import { User, fetchUserByNickname } from "@/data/User";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import ChatClose from "../ChatClose";
@@ -11,9 +11,16 @@ import { API_BASE, WS_URL } from "@/lib/config";
 
 function UserMessageList({ id }: { id: string }) {
   const [group, setGroup] = useState<Message[]>([]);
-  const user = userList.find((item) => item.nickName === id);
+  const [user, setUser] = useState<User | null>(null);
 
   const [client, setClient] = useState<any>(null);
+
+  useEffect(() => {
+    // Fetch user by nickname
+    fetchUserByNickname(id).then((fetchedUser) => {
+      setUser(fetchedUser);
+    });
+  }, [id]);
 
   useEffect(() => {
     if (!user) return;

@@ -1,20 +1,27 @@
 "use client";
-import { userList } from "@/data/User";
+import { User, fetchUserById } from "@/data/User";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 function ChatClose({ client, id }: { client: any; id: number }) {
-  const user = userList.filter((item) => item.id === id);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    fetchUserById(id).then((fetchedUser) => {
+      setUser(fetchedUser);
+    });
+  }, [id]);
+
   const exitClose = () => {
-    if (client) {
+    if (client && user) {
       client.publish({
         destination: "/app/user.disconnectUser",
         headers: {},
         body: JSON.stringify({
-          id: user[0].id,
-          firstname: user[0].firstname,
-          lastname: user[0].lastname,
-          status: user[0].status,
+          id: user.id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          status: user.status,
           nickName: "OFFLINE",
         }),
       });

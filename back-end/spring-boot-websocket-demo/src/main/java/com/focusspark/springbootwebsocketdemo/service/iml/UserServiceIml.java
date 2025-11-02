@@ -8,15 +8,16 @@ import java.util.Optional;
 
 public interface UserServiceIml {
 
-
     void saveUser(User user);
 
     void disconnect(User user);
 
     List<User> findConnectedUsers();
 
-    Optional<User>  getUser(String nickName);
+    List<User> findAllUsers();
 
-    Optional<User>  findByUser(Long userId);
+    Optional<User> getUser(String nickName);
+
+    Optional<User> findByUser(Long userId);
 
 }
