@@ -1,4 +1,12 @@
-export  const userList= [
+export interface User {
+  id: number;
+  firstname: string;
+  lastname: string;
+  nickName: string;
+  status: "ONLINE" | "OFFLINE" | string;
+}
+
+export const userList: User[] = [
 {
     id:1,
     firstname:"user-1",

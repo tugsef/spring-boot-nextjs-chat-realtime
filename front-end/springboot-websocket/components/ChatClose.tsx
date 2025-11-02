@@ -1,3 +1,4 @@
+"use client";
 import { userList } from "@/data/User";
 import Link from "next/link";
 import React from "react";

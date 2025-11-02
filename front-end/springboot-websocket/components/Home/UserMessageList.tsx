@@ -10,12 +10,13 @@ import ChatClose from "../ChatClose";
 
 function UserMessageList({ id }: { id: string }) {
   const [group, setGroup] = useState<Message[]>([]);
-  const user = userList.filter((item) => item.nickName === id);
+  const user = userList.find((item) => item.nickName === id);
 
   const [client, setClient] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/group/${user[0].id}`)
+    if (!user) return;
+    fetch(`http://localhost:8080/group/${user.id}`)
       .then((res) => {
         return res.json();
       })
@@ -28,28 +29,30 @@ function UserMessageList({ id }: { id: string }) {
       debug: (str) => console.log(str),
       onConnect: () => {
         console.log("Connected");
-        stompClient.publish({
-          destination: "/app/user.addUser",
-          headers: {},
-          body: JSON.stringify({
-            id: user[0].id,
-            firstname: user[0].firstname,
-            lastname: user[0].lastname,
-            status: user[0].status,
-            nickName: user[0].nickName,
-          }),
-        });
-        stompClient.publish({
-          destination: "/user/public",
-          headers: {},
-          body: JSON.stringify({
-            id: user[0].id,
-            firstname: user[0].firstname,
-            lastname: user[0].lastname,
-            status: user[0].status,
-            nickName: user[0].nickName,
-          }),
-        });
+        if (user) {
+          stompClient.publish({
+            destination: "/app/user.addUser",
+            headers: {},
+            body: JSON.stringify({
+              id: user.id,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              status: user.status,
+              nickName: user.nickName,
+            }),
+          });
+          stompClient.publish({
+            destination: "/user/public",
+            headers: {},
+            body: JSON.stringify({
+              id: user.id,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              status: user.status,
+              nickName: user.nickName,
+            }),
+          });
+        }
       },
 
       onDisconnect: () => {
@@ -62,11 +65,11 @@ function UserMessageList({ id }: { id: string }) {
     return () => {
       stompClient.deactivate();
     };
-  }, []);
+  }, [id]);
 
   return (
     <div className="w-full h-screen container mx-auto flex flex-col items-center justify-center gap-2">
-      <ChatClose client={client} id={user[0].id} />
+      {user ? <ChatClose client={client} id={user.id} /> : null}
       <p className="text-4xl text-gray-900 dark:text-white">My Messages</p>
       <ul className="max-w-md divide-y divide-gray-700 w-full list-none">
         {group.map((gr, index) => (
@@ -81,6 +84,9 @@ function UserMessageList({ id }: { id: string }) {
           </li>
         ))}
       </ul>
+      {!user && (
+        <p className="text-sm text-red-400">User not found. Please go back and enter a valid nickname.</p>
+      )}
     </div>
   );
 }

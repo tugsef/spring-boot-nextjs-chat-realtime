@@ -27,8 +27,11 @@ export default function App() {
       </div>
 
       <Link
-        href={`/chat/chatlist/${id}`}
-        className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+        href={id ? `/chat/chatlist/${encodeURIComponent(id)}` : "#"}
+        aria-disabled={!id}
+        className={`inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 ${
+          id ? "bg-blue-700 hover:bg-blue-800" : "bg-blue-400 pointer-events-none opacity-60"
+        }`}
       >
        Go
         <svg
@@ -40,9 +43,9 @@ export default function App() {
         >
           <path
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             d="M1 5h12m0 0L9 1m4 4L9 9"
           />
         </svg>

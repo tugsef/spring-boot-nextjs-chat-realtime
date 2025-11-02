@@ -57,7 +57,7 @@ export default function page() {
           senderId: testMessage.senderId,
           recipientId: testMessage.recipientId,
           content: input,
-          timestamp: Date.now,
+          timestamp: Date.now(),
         }),
       });
       setInput("");

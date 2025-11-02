@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@/context/Chat/ChatContextTypes";
+import type { User } from "@/data/User";
 import { Message } from "@/entities/EntityList";
 import React, { useEffect, useState } from "react";
 

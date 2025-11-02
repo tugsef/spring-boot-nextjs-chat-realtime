@@ -12,7 +12,7 @@ function ChatItem({
   return (
     <div
       className={`flex  gap-2.5 ${
-        item.senderId === senderId ? "justify-end" : "justify-star"
+        item.senderId === senderId ? "justify-end" : "justify-start"
       }`}
     >
       <img

@@ -10,7 +10,7 @@ import ChatClose from "@/components/ChatClose";
 export default function page({
   params: { name },
 }: {
-  params: { name: string };
+  params: { name: string[] };
 }) {
   const [messages, setMessages] = useState<Message>({} as Message);
   const [input, setInput] = useState<any>("");
@@ -44,7 +44,7 @@ export default function page({
      return () => {
        stompClient.deactivate();
      };
-   }, []);
+   }, [name]);
 
 
  const sendMessage = () => {
@@ -52,10 +52,10 @@ export default function page({
        client.publish({
          destination: "/app/chat",
          body: JSON.stringify({
-           senderId: name[0],
-           recipientId: name[1],
+           senderId: Number(name[0]),
+           recipientId: Number(name[1]),
            content: input,
-           timestamp: Date.now,
+           timestamp: Date.now(),
          }),
        });
        setMessages({
@@ -80,11 +80,17 @@ export default function page({
         </h1>
         <div className="flex justify-between">  
           <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
-            from: #{userList.filter((item) => item.id === Number(name[0]))[0].nickName}
+            {(() => {
+              const u = userList.find((item) => item.id === Number(name[0]));
+              return `from: #${u ? u.nickName : "unknown"}`;
+            })()}
           </span>
 
           <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
-            to: #{userList.filter((item) => item.id === Number(name[1]))[0].nickName}
+            {(() => {
+              const u = userList.find((item) => item.id === Number(name[1]));
+              return `to: #${u ? u.nickName : "unknown"}`;
+            })()}
           </span>
         </div>
 

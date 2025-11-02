@@ -16,38 +16,32 @@ function ChatListComponent({
   const [photos, setPhotos] = useState<Message[]>(initilier);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/messages/${senderId}/${recipientId}`)
-      .then((res) => {
-        return res.json();
-      })
+    const controller = new AbortController();
+    fetch(`http://localhost:8080/messages/${senderId}/${recipientId}`, {
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
       .then((data) => {
         setPhotos(data as Message[]);
         console.log(data);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") console.error("Fetch messages failed", err);
       });
-  }, []);
+    return () => controller.abort();
+  }, [senderId, recipientId]);
+
+  // Keep scrolled to bottom when messages update
+  useEffect(() => {
+    if (!messageEl.current) return;
+    messageEl.current.scrollTo({
+      top: messageEl.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [photos]);
 
   useEffect(() => {
-    if (messageEl && messageEl.current) {
-      messageEl.current.addEventListener("DOMNodeInserted", (event: Event) => {
-        const target = event.currentTarget as HTMLDivElement;
-        target.scroll({ top: target.scrollHeight, behavior: "smooth" });
-      });
-    }
-
-    return () => {
-      if (messageEl && messageEl.current) {
-        messageEl.current.removeEventListener(
-          "DOMNodeInserted",
-          (event: Event) => {
-            const target = event.currentTarget as HTMLDivElement;
-            target.scroll({ top: target.scrollHeight, behavior: "smooth" });
-          }
-        );
-      }
-    };
-  }, []);
-
-  useEffect(() => {
+    if (!lastMessage || lastMessage.id === 0 || !lastMessage.content) return;
     setPhotos((prev) => [...prev, lastMessage]);
   }, [lastMessage]);
 
