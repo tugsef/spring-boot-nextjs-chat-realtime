@@ -3,21 +3,35 @@ import React, { useEffect,  useState } from "react";
 import ChatListComponent from "@/components/ChatPage/ChatListComponent";
 import { Message } from "@/entities/EntityList";
 import { Client } from "@stomp/stompjs";
-import { userList } from "@/data/User";
+import { User, fetchUserById } from "@/data/User";
 import SockJS from "sockjs-client";
 import ChatClose from "@/components/ChatClose";
+import { WS_URL } from "@/lib/config";
 
 export default function page({
   params: { name },
 }: {
-  params: { name: string };
+  params: { name: string[] };
 }) {
   const [messages, setMessages] = useState<Message>({} as Message);
   const [input, setInput] = useState<any>("");
   const [client, setClient] = useState<any>(null);
+  const [fromUser, setFromUser] = useState<User | null>(null);
+  const [toUser, setToUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Fetch both users
+    Promise.all([
+      fetchUserById(Number(name[0])),
+      fetchUserById(Number(name[1]))
+    ]).then(([from, to]) => {
+      setFromUser(from);
+      setToUser(to);
+    });
+  }, [name]);
 
    useEffect(() => {
-     const socket = new SockJS("http://localhost:8080/ws");
+     const socket = new SockJS(WS_URL);
      const stompClient = new Client({
        webSocketFactory: () => socket,
        debug: (str) => console.log(str),
@@ -44,7 +58,7 @@ export default function page({
      return () => {
        stompClient.deactivate();
      };
-   }, []);
+   }, [name]);
 
 
  const sendMessage = () => {
@@ -52,10 +66,10 @@ export default function page({
        client.publish({
          destination: "/app/chat",
          body: JSON.stringify({
-           senderId: name[0],
-           recipientId: name[1],
+           senderId: Number(name[0]),
+           recipientId: Number(name[1]),
            content: input,
-           timestamp: Date.now,
+           timestamp: Date.now(),
          }),
        });
        setMessages({
@@ -80,11 +94,11 @@ export default function page({
         </h1>
         <div className="flex justify-between">  
           <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
-            from: #{userList.filter((item) => item.id === Number(name[0]))[0].nickName}
+            {`from: #${fromUser ? fromUser.nickName : "loading..."}`}
           </span>
 
           <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
-            to: #{userList.filter((item) => item.id === Number(name[1]))[0].nickName}
+            {`to: #${toUser ? toUser.nickName : "loading..."}`}
           </span>
         </div>
 

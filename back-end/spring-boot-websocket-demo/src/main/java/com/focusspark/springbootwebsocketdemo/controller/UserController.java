@@ -44,15 +44,22 @@ public class UserController {
         return ResponseEntity.ok(userService.findConnectedUsers());
     }
 
+    @GetMapping("/users/all")
+    public ResponseEntity<List<User>> findAllUsers() {
+        return ResponseEntity.ok(userService.findAllUsers());
+    }
+
     @GetMapping("/user/{nickName}")
-    public ResponseEntity<Optional<User>> findGroupMessages(@PathVariable String nickName) {
-        return ResponseEntity
-                .ok(userService.getUser(nickName));
+    public ResponseEntity<User> findUserByNickname(@PathVariable String nickName) {
+        return userService.getUser(nickName)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/user/id/{userId}")
-    public ResponseEntity<Optional<User>> findByUser(@PathVariable Long userId) {
-        return ResponseEntity
-                .ok(userService.findByUser(userId));
+    public ResponseEntity<User> findByUser(@PathVariable Long userId) {
+        return userService.findByUser(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
