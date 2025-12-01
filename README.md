@@ -246,10 +246,4 @@ This setup is useful for real-time applications where live updates and instant m
 
 
 
-# :e-mail: Contact
-|***Sefa Demirtaş***|
-|:-------------|
-|*Software Developer*|
-|[Linkedin](https://www.linkedin.com/in/sefa-demirtas)|
-|sefa.demirtas91@gmail.com|
 
